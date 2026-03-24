@@ -207,6 +207,12 @@
       width: 100%;
     }
 
+    .hero-grid {
+      grid-template-columns: 1fr;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
     .hero-card,
     .step-card,
     .result-card,
@@ -220,81 +226,21 @@
       text-align: center;
     }
 
-    .hero-visual {
-      position: relative;
-      min-height: 430px;
-      border-radius: 24px;
-      background:
-        radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.9), transparent 20%),
-        linear-gradient(145deg, rgba(250, 242, 237, 0.98), rgba(244, 231, 234, 0.95), rgba(250, 242, 237, 0.98));
-      box-shadow: var(--shadow-card);
-      overflow: hidden;
-    }
-
     .hero-card {
       align-self: center;
       display: grid;
       align-content: center;
       justify-items: center;
       gap: 18px;
+      min-height: 460px;
     }
 
-    .hero-visual::before,
-    .hero-visual::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.36);
-    }
-
-    .hero-visual::before {
-      width: 220px;
-      height: 220px;
-      top: -40px;
-      right: -20px;
-    }
-
-    .hero-visual::after {
-      width: 180px;
-      height: 180px;
-      bottom: -30px;
-      left: -10px;
-    }
-
-    .stat-badge {
-      position: absolute;
-      padding: 18px 20px;
-      border-radius: 22px;
-      background: rgba(255, 252, 250, 0.78);
-      box-shadow: var(--shadow-soft);
-      min-width: 170px;
-      border: 1px solid rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-    }
-
-    .stat-badge strong,
     .big-number {
       display: block;
       font-size: clamp(2rem, 5vw, 3.8rem);
       line-height: 1;
       font-weight: 800;
       color: var(--rose-deep);
-    }
-
-    .stat-badge span {
-      display: block;
-      margin-top: 8px;
-      color: var(--muted);
-    }
-
-    .stat-top {
-      top: 58px;
-      left: 24px;
-    }
-
-    .stat-bottom {
-      right: 22px;
-      bottom: 38px;
     }
 
     .actions,
@@ -538,10 +484,6 @@
         grid-template-columns: 1fr;
       }
 
-      .hero-visual {
-        min-height: 300px;
-      }
-
       .hero-card {
         min-height: auto;
       }
@@ -618,25 +560,6 @@
         border-radius: 14px;
       }
 
-      .stat-badge {
-        min-width: 132px;
-        padding: 12px 14px;
-      }
-
-      .hero-visual {
-        min-height: 220px;
-      }
-
-      .stat-top {
-        top: 22px;
-        left: 14px;
-      }
-
-      .stat-bottom {
-        right: 14px;
-        bottom: 18px;
-      }
-
       .results-grid {
         gap: 12px;
       }
@@ -662,16 +585,6 @@
               <p class="lead">Этот калькулятор покажет, сколько ты теряешь каждый месяц, если не работаешь со своими клиентами — и сколько можешь заработать, если начнешь.</p>
               <div class="actions">
                 <button class="btn" type="button" data-next>Рассчитать</button>
-              </div>
-            </div>
-            <div class="hero-visual" aria-hidden="true">
-              <div class="stat-badge stat-top">
-                <strong>+30%</strong>
-                <span>потенциал возврата спящих клиентов</span>
-              </div>
-              <div class="stat-badge stat-bottom">
-                <strong>+20%</strong>
-                <span>рост от работы с постоянной базой</span>
               </div>
             </div>
           </div>
