@@ -61,7 +61,7 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
-      width: 274px;
+      width: min(100%, 300px);
       margin: 0 auto 14px;
       transition: opacity 220ms ease, transform 220ms ease;
     }
@@ -96,7 +96,7 @@
 
     .view {
       position: relative;
-      min-height: 520px;
+      min-height: clamp(560px, 72vh, 760px);
       display: grid;
       align-items: center;
     }
@@ -151,13 +151,13 @@
     }
 
     h1 {
-      max-width: 360px;
-      font-size: clamp(46px, 4.2vw, 58px);
+      max-width: 420px;
+      font-size: clamp(44px, 4vw, 58px);
     }
 
     h2 {
-      max-width: 240px;
-      font-size: 23px;
+      max-width: 300px;
+      font-size: clamp(22px, 2vw, 26px);
     }
 
     .lead,
@@ -166,9 +166,9 @@
     .cta-text,
     .footer-note {
       margin: 0;
-      max-width: 270px;
-      font-size: 10px;
-      line-height: 1.35;
+      max-width: 320px;
+      font-size: clamp(10px, 0.85vw, 12px);
+      line-height: 1.4;
       color: var(--muted);
     }
 
@@ -185,15 +185,15 @@
       gap: 12px;
       justify-items: center;
       width: 100%;
-      max-width: 360px;
+      max-width: 420px;
     }
 
     .step-card,
     .result-card,
     .cta-card {
       width: 100%;
-      max-width: 274px;
-      padding: 20px 22px;
+      max-width: clamp(290px, 30vw, 380px);
+      padding: 22px 24px;
       border-radius: 16px;
       border: 1px solid var(--stroke);
       background: var(--card);
@@ -202,13 +202,13 @@
 
     .step-card {
       display: grid;
-      gap: 14px;
+      gap: 16px;
       justify-items: center;
     }
 
     .result-card {
       display: grid;
-      gap: 8px;
+      gap: 10px;
       animation: rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
@@ -219,7 +219,7 @@
 
     .cta-card {
       display: grid;
-      gap: 10px;
+      gap: 12px;
       justify-items: center;
       animation: rise 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
       animation-delay: 200ms;
@@ -232,7 +232,7 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       width: 100%;
     }
 
@@ -246,12 +246,12 @@
     }
 
     .btn {
-      min-width: 110px;
-      padding: 11px 20px;
+      min-width: 118px;
+      padding: 12px 22px;
       border-radius: 999px;
       background: var(--rose);
       color: #fff;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       line-height: 1;
     }
@@ -270,14 +270,14 @@
     }
 
     .number-input {
-      width: 74px;
-      padding: 9px 10px;
+      width: 82px;
+      padding: 10px 12px;
       border-radius: 11px;
       border: 1px solid var(--stroke);
       background: #f8f1f0;
       color: var(--text);
       text-align: center;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       outline: none;
     }
@@ -324,13 +324,13 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
-      font-size: 9px;
+      font-size: 10px;
       color: var(--muted);
     }
 
     .error {
-      min-height: 12px;
-      font-size: 9px;
+      min-height: 14px;
+      font-size: 10px;
       color: var(--rose);
       opacity: 0;
       transition: opacity 180ms ease;
@@ -341,11 +341,11 @@
     }
 
     .chip {
-      padding: 7px 10px;
+      padding: 8px 12px;
       border-radius: 999px;
       background: #f4e9eb;
       color: var(--muted);
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 700;
       line-height: 1;
     }
@@ -356,7 +356,7 @@
     }
 
     .result-title {
-      font-size: 10px;
+      font-size: 11px;
       line-height: 1.2;
       color: var(--muted);
     }
@@ -364,7 +364,7 @@
     .big-number {
       margin: 0;
       font-family: "Roboto", "Segoe UI", sans-serif;
-      font-size: 21px;
+      font-size: clamp(20px, 1.9vw, 28px);
       line-height: 1;
       letter-spacing: -0.04em;
       font-weight: 900;
@@ -383,13 +383,13 @@
       }
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 900px) {
       body {
         overflow-y: auto;
       }
 
       .page {
-        padding: 16px 12px;
+        padding: 20px 16px;
       }
 
       .view {
@@ -401,11 +401,57 @@
       }
 
       h1 {
-        font-size: 32px;
+        max-width: 390px;
+        font-size: clamp(38px, 7vw, 50px);
       }
 
       h2 {
-        font-size: 22px;
+        max-width: 320px;
+        font-size: 24px;
+      }
+
+      .lead,
+      .hint,
+      .result-text,
+      .cta-text,
+      .footer-note {
+        max-width: 320px;
+        font-size: 11px;
+      }
+
+      .progress {
+        width: min(100%, 320px);
+      }
+
+      .hero-card {
+        max-width: 400px;
+      }
+
+      .step-card,
+      .result-card,
+      .cta-card {
+        max-width: 340px;
+        padding: 22px 20px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 16px 12px 24px;
+      }
+
+      .panel {
+        gap: 12px;
+      }
+
+      h1 {
+        font-size: 32px;
+        max-width: 310px;
+      }
+
+      h2 {
+        font-size: 21px;
+        max-width: 260px;
       }
 
       .hero-card .lead {
@@ -413,18 +459,53 @@
         line-height: 1.45;
       }
 
+      .lead,
+      .hint,
+      .result-text,
+      .cta-text,
+      .footer-note {
+        max-width: 280px;
+        font-size: 10px;
+      }
+
       .hero-card,
       .step-card,
       .result-card,
       .cta-card,
       .progress {
-        max-width: 100%;
+        max-width: 280px;
+      }
+
+      .step-card,
+      .result-card,
+      .cta-card {
+        padding: 18px 16px;
       }
 
       .btn,
-      .chip,
+      .chip {
+        width: auto;
+      }
+
+      .step-actions .btn,
+      .actions .btn {
+        min-width: 104px;
+        padding: 11px 18px;
+        font-size: 10px;
+      }
+
       .number-input {
-        width: 100%;
+        width: 78px;
+        font-size: 12px;
+      }
+
+      .chips {
+        gap: 6px;
+      }
+
+      .chip {
+        padding: 7px 10px;
+        font-size: 9px;
       }
 
       .hero-card .btn {
@@ -432,6 +513,26 @@
         min-width: 96px;
         padding: 10px 16px;
         font-size: 9px;
+      }
+
+      .big-number {
+        font-size: 20px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .shell {
+        max-width: 1120px;
+      }
+
+      .hero-card {
+        max-width: 450px;
+      }
+
+      .step-card,
+      .result-card,
+      .cta-card {
+        max-width: 390px;
       }
     }
   </style>
