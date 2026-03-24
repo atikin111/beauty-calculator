@@ -191,7 +191,7 @@
     .hero-grid,
     .step-grid {
       display: grid;
-      grid-template-columns: 1fr 0.92fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 18px;
       align-items: center;
       width: 100%;
@@ -281,14 +281,15 @@
     .step-card {
       display: grid;
       gap: 22px;
-      max-width: 100%;
-      width: 100%;
+      width: min(100%, 860px);
       margin: 0 auto;
       justify-items: center;
     }
 
     .step-grid {
-      max-width: 860px;
+      width: 100%;
+      max-width: 100%;
+      justify-content: center;
     }
 
     .input-row {
@@ -503,7 +504,7 @@
       }
 
       .step-grid {
-        max-width: 720px;
+        width: 100%;
       }
 
       .hero-card {
