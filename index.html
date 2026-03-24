@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beauty Calculator</title>
+  <style>
+    :root {
+      --milk: #fffaf5;
+      --powder: #f9e5e8;
+      --beige: #f4eadf;
+      --rose: #dd7f98;
+      --rose-deep: #c96281;
+      --text: #49353d;
+      --muted: #8f737c;
+      --card: rgba(255, 255, 255, 0.82);
+      --shadow: 0 24px 60px rgba(180, 121, 141, 0.16);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --transition: 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), transparent 38%),
+        radial-gradient(circle at top right, rgba(221, 127, 152, 0.22), transparent 28%),
+        linear-gradient(135deg, var(--milk) 0%, var(--beige) 52%, #f7ece7 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      border-radius: 999px;
+      pointer-events: none;
+      filter: blur(8px);
+      opacity: 0.7;
+    }
+
+    body::before {
+      width: 280px;
+      height: 280px;
+      top: 4%;
+      right: -80px;
+      background: rgba(255, 203, 214, 0.35);
+    }
+
+    body::after {
+      width: 220px;
+      height: 220px;
+      bottom: 8%;
+      left: -60px;
+      background: rgba(255, 234, 214, 0.65);
+    }
+
+    .page {
+      width: min(100%, 1120px);
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    .shell {
+      position: relative;
+      overflow: hidden;
+      padding: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      border-radius: 40px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 248, 246, 0.92));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(140deg, rgba(255, 255, 255, 0.14), transparent 42%, rgba(221, 127, 152, 0.08));
+      pointer-events: none;
+    }
+
+    .progress {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(221, 127, 152, 0.14);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #f0a7b8, var(--rose));
+      transition: width var(--transition);
+    }
+
+    .progress-label {
+      min-width: 72px;
+      text-align: right;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .view {
+      position: relative;
+      min-height: 680px;
+    }
+
+    .panel {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: translateX(48px) scale(0.98);
+      pointer-events: none;
+      transition: opacity var(--transition), transform var(--transition);
+      display: grid;
+      align-content: center;
+      gap: 24px;
+    }
+
+    .panel.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(249, 229, 232, 0.9);
+      color: var(--rose-deep);
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+    }
+
+    h1, h2 {
+      margin: 0;
+      line-height: 1.05;
+      font-weight: 700;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(2.5rem, 5vw, 4.8rem);
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      max-width: 700px;
+    }
+
+    .lead,
+    .hint,
+    .result-text,
+    .cta-text {
+      max-width: 700px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .hero-grid,
+    .step-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-card,
+    .step-card,
+    .result-card,
+    .cta-card {
+      padding: 28px;
+      border-radius: var(--radius-xl);
+      background: var(--card);
+      box-shadow: 0 14px 36px rgba(153, 102, 120, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.72);
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 420px;
+      border-radius: 36px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.92), transparent 22%),
+        linear-gradient(145deg, rgba(249, 229, 232, 0.92), rgba(244, 234, 223, 0.92));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 18px 40px rgba(174, 118, 138, 0.12);
+      overflow: hidden;
+    }
+
+    .hero-visual::before,
+    .hero-visual::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.36);
+    }
+
+    .hero-visual::before {
+      width: 220px;
+      height: 220px;
+      top: -40px;
+      right: -20px;
+    }
+
+    .hero-visual::after {
+      width: 180px;
+      height: 180px;
+      bottom: -30px;
+      left: -10px;
+    }
+
+    .stat-badge {
+      position: absolute;
+      padding: 18px 20px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 16px 32px rgba(190, 139, 156, 0.14);
+      min-width: 180px;
+    }
+
+    .stat-badge strong,
+    .big-number {
+      display: block;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1;
+      font-weight: 800;
+      color: var(--rose-deep);
+    }
+
+    .stat-badge span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+    }
+
+    .stat-top {
+      top: 72px;
+      left: 34px;
+    }
+
+    .stat-bottom {
+      right: 26px;
+      bottom: 54px;
+    }
+
+    .actions,
+    .step-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .btn,
+    .chip {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .btn {
+      padding: 16px 24px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #eba5b7, var(--rose));
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      box-shadow: 0 16px 30px rgba(201, 98, 129, 0.24);
+    }
+
+    .btn:hover,
+    .btn:focus-visible,
+    .chip:hover,
+    .chip:focus-visible {
+      transform: translateY(-2px);
+    }
+
+    .btn.secondary {
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--rose-deep);
+      box-shadow: inset 0 0 0 1px rgba(221, 127, 152, 0.25);
+    }
+
+    .step-card {
+      display: grid;
+      gap: 22px;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .number-input {
+      width: min(100%, 220px);
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(221, 127, 152, 0.22);
+      background: rgba(255, 255, 255, 0.95);
+      font-size: 1.15rem;
+      color: var(--text);
+      outline: none;
+      box-shadow: inset 0 1px 2px rgba(100, 62, 74, 0.04);
+    }
+
+    .number-input:focus {
+      border-color: rgba(201, 98, 129, 0.55);
+      box-shadow: 0 0 0 4px rgba(221, 127, 152, 0.12);
+    }
+
+    .range-wrap {
+      display: grid;
+      gap: 14px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 12px;
+      appearance: none;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(240, 167, 184, 0.95), rgba(221, 127, 152, 0.28));
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #fff;
+      border: 6px solid var(--rose);
+      box-shadow: 0 10px 20px rgba(201, 98, 129, 0.22);
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #fff;
+      border: 6px solid var(--rose);
+      box-shadow: 0 10px 20px rgba(201, 98, 129, 0.22);
+      cursor: pointer;
+    }
+
+    .range-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .error {
+      min-height: 24px;
+      color: var(--rose-deep);
+      font-size: 0.96rem;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .error.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .chip {
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: inset 0 0 0 1px rgba(221, 127, 152, 0.18);
+    }
+
+    .chip.active {
+      background: rgba(221, 127, 152, 0.14);
+      color: var(--rose-deep);
+      box-shadow: inset 0 0 0 1px rgba(201, 98, 129, 0.22);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .result-card {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: rise 640ms ease forwards;
+    }
+
+    .result-card:nth-child(2) {
+      animation-delay: 120ms;
+    }
+
+    .result-title {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .big-number {
+      margin-bottom: 12px;
+    }
+
+    .cta-card {
+      display: grid;
+      gap: 16px;
+      margin-top: 10px;
+      background: linear-gradient(135deg, rgba(255, 245, 247, 0.95), rgba(255, 251, 248, 0.92));
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        padding: 18px;
+        border-radius: 28px;
+      }
+
+      .view {
+        min-height: 780px;
+      }
+
+      .hero-grid,
+      .step-grid,
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 14px 12px 30px;
+      }
+
+      .view {
+        min-height: 820px;
+      }
+
+      .panel {
+        gap: 18px;
+      }
+
+      .hero-card,
+      .step-card,
+      .result-card,
+      .cta-card {
+        padding: 22px 18px;
+        border-radius: 24px;
+      }
+
+      .progress {
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      .progress-label {
+        min-width: 58px;
+        font-size: 0.88rem;
+      }
+
+      h1 {
+        font-size: 2.35rem;
+      }
+
+      h2 {
+        font-size: 1.85rem;
+      }
+
+      .input-row {
+        align-items: stretch;
+      }
+
+      .number-input {
+        width: 100%;
+      }
+
+      .btn,
+      .chip {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .stat-badge {
+        min-width: 150px;
+        padding: 14px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="shell">
+      <div class="progress">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label" id="progressLabel">0%</div>
+      </div>
+
+      <div class="view">
+        <section class="panel active" data-step="0">
+          <div class="hero-grid">
+            <div class="hero-card">
+              <span class="eyebrow">Beauty Revenue Calculator</span>
+              <h1>Узнай, сколько денег скрыто в твоей клиентской базе</h1>
+              <p class="lead">Этот калькулятор покажет, сколько ты теряешь каждый месяц, если не работаешь со своими клиентами — и сколько можешь заработать, если начнешь.</p>
+              <div class="actions">
+                <button class="btn" type="button" data-next>Рассчитать</button>
+              </div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+              <div class="stat-badge stat-top">
+                <strong>+30%</strong>
+                <span>потенциал возврата спящих клиентов</span>
+              </div>
+              <div class="stat-badge stat-bottom">
+                <strong>+20%</strong>
+                <span>рост от работы с постоянной базой</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" data-step="1">
+          <div class="step-grid">
+            <div class="step-card">
+              <span class="eyebrow">Шаг 1</span>
+              <h2>Сколько у тебя всего клиентов в базе?</h2>
+              <p class="hint">Укажи общее количество клиентов — новых, старых и тех, кто давно не записывался.</p>
+              <div class="range-wrap">
+                <input id="baseRange" type="range" min="0" max="500" value="120">
+                <div class="range-meta"><span>0</span><span>500+</span></div>
+              </div>
+              <div class="input-row">
+                <input class="number-input" id="baseInput" type="number" min="0" step="1" value="120" inputmode="numeric">
+              </div>
+              <div class="step-actions">
+                <button class="btn secondary" type="button" data-prev>Назад</button>
+                <button class="btn" type="button" data-next>Дальше</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" data-step="2">
+          <div class="step-grid">
+            <div class="step-card">
+              <span class="eyebrow">Шаг 2</span>
+              <h2>Сколько из них — постоянные?</h2>
+              <p class="hint">Укажи количество клиентов, которые регулярно возвращаются и записываются снова.</p>
+              <div class="range-wrap">
+                <input id="regularRange" type="range" min="0" max="500" value="60">
+                <div class="range-meta"><span>0</span><span>500+</span></div>
+              </div>
+              <div class="input-row">
+                <input class="number-input" id="regularInput" type="number" min="0" step="1" value="60" inputmode="numeric">
+              </div>
+              <div class="error" id="regularError">Постоянных клиентов не может быть больше всей базы 🙂</div>
+              <div class="step-actions">
+                <button class="btn secondary" type="button" data-prev>Назад</button>
+                <button class="btn" type="button" data-next>Дальше</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" data-step="3">
+          <div class="step-grid">
+            <div class="step-card">
+              <span class="eyebrow">Шаг 3</span>
+              <h2>Какой у тебя средний чек?</h2>
+              <p class="hint">Укажи среднюю сумму, которую платит клиент за одно посещение.</p>
+              <div class="input-row">
+                <input class="number-input" id="avgInput" type="number" min="0" step="100" value="2000" inputmode="numeric">
+              </div>
+              <div class="chips" id="quickChecks">
+                <button class="chip" type="button" data-value="1000">1000</button>
+                <button class="chip" type="button" data-value="1500">1500</button>
+                <button class="chip active" type="button" data-value="2000">2000</button>
+                <button class="chip" type="button" data-value="2500">2500</button>
+                <button class="chip" type="button" data-value="3000">3000</button>
+                <button class="chip" type="button" data-value="5000">5000</button>
+              </div>
+              <div class="step-actions">
+                <button class="btn secondary" type="button" data-prev>Назад</button>
+                <button class="btn" type="button" data-next>Показать результат</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" data-step="4">
+          <span class="eyebrow">Результат</span>
+          <h2>Твой доход уже спрятан в базе клиентов</h2>
+          <div class="results-grid">
+            <article class="result-card">
+              <div class="result-title">Сейчас ты теряешь:</div>
+              <div class="big-number" id="lossOutput">0 руб. / мес</div>
+              <p class="result-text">Столько денег может уходить каждый месяц, если не возвращать клиентов из своей базы.</p>
+            </article>
+            <article class="result-card">
+              <div class="result-title">Твой потенциальный заработок:</div>
+              <div class="big-number" id="growthOutput">0 руб. / мес</div>
+              <p class="result-text">Если начать работать с клиентской базой, можно вернуть часть “спящих” клиентов и увеличить выручку без поиска новых с нуля.</p>
+            </article>
+          </div>
+          <article class="cta-card">
+            <h2>У тебя уже есть деньги в базе клиентов</h2>
+            <p class="cta-text">Нужно только правильно с ней работать. Мы помогаем мастерам и бьюти-специалистам возвращать клиентов, повышать записи и расти в доходе без выгорания.</p>
+            <div class="actions">
+              <a class="btn" href="https://t.me/" target="_blank" rel="noreferrer">Перейти в Telegram</a>
+              <button class="btn secondary" type="button" data-restart>Посчитать заново</button>
+            </div>
+            <div class="footer-note">Формула основана на доле спящих клиентов, которых можно вернуть в работу, и на потенциале роста текущей базы.</div>
+          </article>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const totalSteps = 4;
+    const state = {
+      currentStep: 0,
+      baseClients: 120,
+      regularClients: 60,
+      avgCheck: 2000
+    };
+
+    const panels = Array.from(document.querySelectorAll(".panel"));
+    const progressFill = document.getElementById("progressFill");
+    const progressLabel = document.getElementById("progressLabel");
+
+    const baseRange = document.getElementById("baseRange");
+    const baseInput = document.getElementById("baseInput");
+    const regularRange = document.getElementById("regularRange");
+    const regularInput = document.getElementById("regularInput");
+    const regularError = document.getElementById("regularError");
+    const avgInput = document.getElementById("avgInput");
+    const lossOutput = document.getElementById("lossOutput");
+    const growthOutput = document.getElementById("growthOutput");
+    const quickChecks = Array.from(document.querySelectorAll("#quickChecks .chip"));
+
+    function clampToNonNegative(value) {
+      return Number.isFinite(value) ? Math.max(0, Math.round(value)) : 0;
+    }
+
+    function formatCurrency(value) {
+      return `${new Intl.NumberFormat("ru-RU").format(Math.round(value))} руб. / мес`;
+    }
+
+    function updateProgress() {
+      const progress = Math.round((state.currentStep / totalSteps) * 100);
+      progressFill.style.width = `${progress}%`;
+      progressLabel.textContent = `${progress}%`;
+    }
+
+    function updatePanels() {
+      panels.forEach((panel) => {
+        panel.classList.toggle("active", Number(panel.dataset.step) === state.currentStep);
+      });
+      updateProgress();
+    }
+
+    function syncBaseControls(fromInput = false) {
+      state.baseClients = clampToNonNegative(Number(baseInput.value));
+      baseInput.value = state.baseClients;
+      baseRange.value = Math.min(state.baseClients, 500);
+
+      if (state.regularClients > state.baseClients) {
+        if (fromInput) {
+          showRegularError(true);
+        }
+        state.regularClients = state.baseClients;
+        regularInput.value = state.regularClients;
+        regularRange.value = Math.min(state.regularClients, 500);
+      }
+    }
+
+    function showRegularError(visible) {
+      regularError.classList.toggle("visible", visible);
+    }
+
+    function syncRegularControls() {
+      const value = clampToNonNegative(Number(regularInput.value));
+      if (value > state.baseClients) {
+        state.regularClients = state.baseClients;
+        regularInput.value = state.baseClients;
+        regularRange.value = Math.min(state.baseClients, 500);
+        showRegularError(true);
+        return false;
+      }
+
+      state.regularClients = value;
+      regularInput.value = state.regularClients;
+      regularRange.value = Math.min(state.regularClients, 500);
+      showRegularError(false);
+      return true;
+    }
+
+    function syncAvgControls() {
+      state.avgCheck = clampToNonNegative(Number(avgInput.value));
+      avgInput.value = state.avgCheck;
+      quickChecks.forEach((chip) => {
+        chip.classList.toggle("active", Number(chip.dataset.value) === state.avgCheck);
+      });
+    }
+
+    function calculateResults() {
+      const sleepingClients = Math.max(state.baseClients - state.regularClients, 0);
+      const loss = sleepingClients * 0.3 * state.avgCheck;
+      const growth = (sleepingClients * 0.3 * state.avgCheck) + (state.regularClients * 0.2 * state.avgCheck);
+      lossOutput.textContent = formatCurrency(loss);
+      growthOutput.textContent = formatCurrency(growth);
+    }
+
+    function goToStep(step) {
+      state.currentStep = Math.max(0, Math.min(totalSteps, step));
+      if (state.currentStep === 4) {
+        calculateResults();
+      }
+      updatePanels();
+    }
+
+    document.querySelectorAll("[data-next]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (state.currentStep === 2 && !syncRegularControls()) {
+          return;
+        }
+        syncAvgControls();
+        goToStep(state.currentStep + 1);
+      });
+    });
+
+    document.querySelectorAll("[data-prev]").forEach((button) => {
+      button.addEventListener("click", () => goToStep(state.currentStep - 1));
+    });
+
+    document.querySelector("[data-restart]").addEventListener("click", () => goToStep(0));
+
+    baseRange.addEventListener("input", (event) => {
+      state.baseClients = Number(event.target.value);
+      baseInput.value = state.baseClients;
+      if (state.regularClients > state.baseClients) {
+        state.regularClients = state.baseClients;
+        regularInput.value = state.regularClients;
+        regularRange.value = Math.min(state.regularClients, 500);
+      }
+      showRegularError(false);
+    });
+
+    baseInput.addEventListener("input", () => syncBaseControls(true));
+
+    regularRange.addEventListener("input", (event) => {
+      const value = Number(event.target.value);
+      if (value > state.baseClients) {
+        regularRange.value = Math.min(state.baseClients, 500);
+        regularInput.value = state.baseClients;
+        state.regularClients = state.baseClients;
+        showRegularError(true);
+        return;
+      }
+      state.regularClients = value;
+      regularInput.value = state.regularClients;
+      showRegularError(false);
+    });
+
+    regularInput.addEventListener("input", syncRegularControls);
+    avgInput.addEventListener("input", syncAvgControls);
+
+    quickChecks.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        avgInput.value = chip.dataset.value;
+        syncAvgControls();
+      });
+    });
+
+    updatePanels();
+    syncBaseControls();
+    syncRegularControls();
+    syncAvgControls();
+  </script>
+</body>
+</html>
