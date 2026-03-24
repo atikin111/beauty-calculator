@@ -41,6 +41,12 @@
       overflow-x: hidden;
     }
 
+    body.ready .shell {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+
     body::before,
     body::after {
       content: "";
@@ -83,6 +89,10 @@
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 251, 248, 0.74));
       box-shadow: var(--shadow-soft);
       backdrop-filter: blur(18px);
+      opacity: 0;
+      transform: translateY(22px) scale(0.992);
+      filter: blur(10px);
+      transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1), transform 900ms cubic-bezier(0.16, 1, 0.3, 1), filter 900ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .shell::before {
@@ -100,6 +110,12 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 24px;
+    }
+
+    .progress.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
     }
 
     .progress-track {
@@ -128,6 +144,8 @@
     .view {
       position: relative;
       min-height: 600px;
+      display: grid;
+      align-items: center;
     }
 
     .panel {
@@ -143,6 +161,7 @@
       gap: 22px;
       filter: blur(8px);
       text-align: center;
+      width: 100%;
     }
 
     .panel.active {
@@ -207,6 +226,7 @@
       align-items: center;
       width: 100%;
       justify-items: center;
+      margin-inline: auto;
     }
 
     .hero-grid {
@@ -291,10 +311,14 @@
     .step-card {
       display: grid;
       gap: 22px;
-      max-width: 720px;
+      max-width: 100%;
       width: 100%;
       margin: 0 auto;
       justify-items: center;
+    }
+
+    .step-grid {
+      max-width: 860px;
     }
 
     .input-row {
@@ -326,7 +350,7 @@
       display: grid;
       gap: 12px;
       width: 100%;
-      max-width: 560px;
+      max-width: 100%;
     }
 
     input[type="range"] {
@@ -407,6 +431,8 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 18px;
       width: 100%;
+      max-width: 860px;
+      margin-inline: auto;
     }
 
     .result-card {
@@ -503,6 +529,10 @@
       .step-grid,
       .results-grid {
         grid-template-columns: 1fr;
+      }
+
+      .step-grid {
+        max-width: 720px;
       }
 
       .hero-card {
@@ -720,6 +750,7 @@
     const panels = Array.from(document.querySelectorAll(".panel"));
     const progressFill = document.getElementById("progressFill");
     const progressLabel = document.getElementById("progressLabel");
+    const progress = document.querySelector(".progress");
 
     const baseRange = document.getElementById("baseRange");
     const baseInput = document.getElementById("baseInput");
@@ -743,6 +774,7 @@
       const progress = Math.round((state.currentStep / totalSteps) * 100);
       progressFill.style.width = `${progress}%`;
       progressLabel.textContent = `${progress}%`;
+      document.querySelector(".progress").classList.toggle("hidden", state.currentStep === 0 || state.currentStep === 4);
     }
 
     function updatePanels() {
@@ -869,6 +901,7 @@
     syncBaseControls();
     syncRegularControls();
     syncAvgControls();
+    requestAnimationFrame(() => document.body.classList.add("ready"));
   </script>
 </body>
 </html>
