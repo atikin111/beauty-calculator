@@ -152,7 +152,7 @@
 
     h1 {
       max-width: 460px;
-      font-size: clamp(48px, 4.4vw, 64px);
+      font-size: clamp(40px, 3.6vw, 52px);
     }
 
     h2 {
@@ -180,12 +180,20 @@
       justify-items: center;
     }
 
+    .results-grid {
+      gap: 16px;
+    }
+
     .hero-card {
       display: grid;
-      gap: 24px;
+      gap: 14px;
       justify-items: center;
       width: 100%;
       max-width: 420px;
+    }
+
+    .hero-card h1 {
+      margin-bottom: 18px;
     }
 
     .step-card,
@@ -657,7 +665,7 @@
             </article>
             <article class="cta-card">
               <h2>У тебя уже есть деньги в базе клиентов</h2>
-              <p class="cta-text">Нужно только правильно с ней работать. Мы помогаем мастерам и бьюти-специалистам возвращать клиентов, повышать записи и расти в доходе без выгорания.</p>
+              <p class="cta-text">Нужно только правильно с ней работать. Мы помогаем мастерам и бьюти-специалистам возвращать клиентов, повышать записи и расти в доходе.</p>
               <div class="actions">
                 <a class="btn" href="https://t.me/" target="_blank" rel="noreferrer">Перейти в Telegram</a>
               </div>
@@ -853,7 +861,7 @@
     paintRange(baseRange, state.baseClients);
     paintRange(regularRange, state.regularClients);
     if (resultTitles[1]) {
-      resultTitles[1].textContent = "Твой потенциальный заработок:";
+      resultTitles[1].textContent = "ТВОЙ ПОТЕНЦИАЛЬНЫЙ ЗАРАБОТОК:";
     }
     updatePanels();
     requestAnimationFrame(() => document.body.classList.add("ready"));
