@@ -151,13 +151,13 @@
     }
 
     h1 {
-      max-width: 420px;
-      font-size: clamp(44px, 4vw, 58px);
+      max-width: 460px;
+      font-size: clamp(48px, 4.4vw, 64px);
     }
 
     h2 {
-      max-width: 300px;
-      font-size: clamp(22px, 2vw, 26px);
+      max-width: 340px;
+      font-size: clamp(24px, 2.2vw, 30px);
     }
 
     .lead,
@@ -166,8 +166,8 @@
     .cta-text,
     .footer-note {
       margin: 0;
-      max-width: 320px;
-      font-size: clamp(10px, 0.85vw, 12px);
+      max-width: 360px;
+      font-size: clamp(11px, 0.95vw, 14px);
       line-height: 1.4;
       color: var(--muted);
     }
@@ -182,7 +182,7 @@
 
     .hero-card {
       display: grid;
-      gap: 12px;
+      gap: 24px;
       justify-items: center;
       width: 100%;
       max-width: 420px;
@@ -246,14 +246,20 @@
     }
 
     .btn {
-      min-width: 118px;
-      padding: 12px 22px;
+      min-width: 122px;
+      padding: 12px 24px;
       border-radius: 999px;
       background: var(--rose);
       color: #fff;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       line-height: 1;
+    }
+
+    .hero-card .btn {
+      min-width: 156px;
+      padding: 15px 30px;
+      font-size: 14px;
     }
 
     .btn.secondary {
@@ -356,7 +362,7 @@
     }
 
     .result-title {
-      font-size: 11px;
+      font-size: 12px;
       line-height: 1.2;
       color: var(--muted);
     }
@@ -370,6 +376,19 @@
       font-weight: 900;
       color: var(--text);
       white-space: nowrap;
+    }
+
+    .cta-card .actions .btn {
+      min-width: 182px;
+      padding: 14px 28px;
+      font-size: 13px;
+    }
+
+    .cta-card button[data-restart] {
+      min-width: 110px;
+      padding: 8px 12px;
+      font-size: 10px;
+      color: var(--muted);
     }
 
     @keyframes rise {
@@ -402,12 +421,12 @@
 
       h1 {
         max-width: 390px;
-        font-size: clamp(38px, 7vw, 50px);
+        font-size: clamp(42px, 7vw, 54px);
       }
 
       h2 {
         max-width: 320px;
-        font-size: 24px;
+        font-size: 26px;
       }
 
       .lead,
@@ -416,7 +435,7 @@
       .cta-text,
       .footer-note {
         max-width: 320px;
-        font-size: 11px;
+        font-size: 12px;
       }
 
       .progress {
@@ -445,12 +464,12 @@
       }
 
       h1 {
-        font-size: 32px;
+        font-size: 36px;
         max-width: 310px;
       }
 
       h2 {
-        font-size: 21px;
+        font-size: 24px;
         max-width: 260px;
       }
 
@@ -465,7 +484,7 @@
       .cta-text,
       .footer-note {
         max-width: 280px;
-        font-size: 10px;
+        font-size: 11px;
       }
 
       .hero-card,
@@ -510,9 +529,9 @@
 
       .hero-card .btn {
         width: auto;
-        min-width: 96px;
-        padding: 10px 16px;
-        font-size: 9px;
+        min-width: 132px;
+        padding: 12px 20px;
+        font-size: 11px;
       }
 
       .big-number {
@@ -673,6 +692,7 @@
     const lossOutput = document.getElementById("lossOutput");
     const growthOutput = document.getElementById("growthOutput");
     const quickChecks = Array.from(document.querySelectorAll("#quickChecks .chip"));
+    const resultTitles = Array.from(document.querySelectorAll(".result-title"));
 
     function clampToNonNegative(value) {
       return Number.isFinite(value) ? Math.max(0, Math.round(value)) : 0;
@@ -832,6 +852,9 @@
     syncAvgControls();
     paintRange(baseRange, state.baseClients);
     paintRange(regularRange, state.regularClients);
+    if (resultTitles[1]) {
+      resultTitles[1].textContent = "Твой потенциальный заработок:";
+    }
     updatePanels();
     requestAnimationFrame(() => document.body.classList.add("ready"));
   </script>
