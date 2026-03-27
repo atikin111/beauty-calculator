@@ -784,8 +784,9 @@
 
     function calculateResults() {
       const sleepingClients = Math.max(state.baseClients - state.regularClients, 0);
-      const loss = sleepingClients * 0.3 * state.avgCheck;
-      const growth = (sleepingClients * 0.3 * state.avgCheck) + (state.regularClients * 0.2 * state.avgCheck);
+      const reactivationRate = 0.3;
+      const loss = sleepingClients * state.avgCheck;
+      const growth = ((sleepingClients * reactivationRate) + state.regularClients) * state.avgCheck;
       lossOutput.textContent = formatCurrency(loss);
       growthOutput.textContent = formatCurrency(growth);
     }
